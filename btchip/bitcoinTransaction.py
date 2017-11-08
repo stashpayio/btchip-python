@@ -23,9 +23,9 @@ from binascii import hexlify
 class bitcoinInput:
 
 	def __init__(self, bufferOffset=None):
-		self.prevOut = ""
-		self.script = ""
-		self.sequence = ""
+		self.prevOut = b""
+		self.script = b""
+		self.sequence = b""
 		if bufferOffset is not None:
 			buf = bufferOffset['buffer']
 			offset = bufferOffset['offset']
@@ -48,16 +48,16 @@ class bitcoinInput:
 		return result
 
 	def __str__(self):
-		buf =  "Prevout : " + hexlify(self.prevOut) + "\r\n"
-		buf += "Script : " + hexlify(self.script) + "\r\n"
-		buf += "Sequence : " + hexlify(self.sequence) + "\r\n"
+		buf = "Prevout : " + self.prevOut.hex() + "\r\n"
+		buf += "Script : " + self.script.hex() + "\r\n"
+		buf += "Sequence : " + self.sequence.hex() + "\r\n"
 		return buf
 
 class bitcoinOutput:
 
 	def __init__(self, bufferOffset=None):
-		self.amount = ""
-		self.script = ""
+		self.amount = b""
+		self.script = b""
 		if bufferOffset is not None:
 			buf = bufferOffset['buffer']
 			offset = bufferOffset['offset']
@@ -77,20 +77,20 @@ class bitcoinOutput:
 		return result
 
 	def __str__(self):
-		buf =  "Amount : " + hexlify(self.amount) + "\r\n"
-		buf += "Script : " + hexlify(self.script) + "\r\n"
+		buf = "Amount : " + self.amount.hex() + "\r\n"
+		buf += "Script : " + self.script.hex() + "\r\n"
 		return buf
 
 
 class bitcoinTransaction:
 
 	def __init__(self, data=None):
-		self.version = ""
+		self.version = b""
 		self.inputs = []
 		self.outputs = []
-		self.lockTime = ""
+		self.lockTime = b""
 		self.witness = False
-		self.witnessScript = ""
+		self.witnessScript = b""
 		if data is not None:
 			offset = 0
 			self.version = data[offset:offset + 4]
@@ -148,7 +148,7 @@ class bitcoinTransaction:
 		return result
 
 	def __str__(self):
-		buf =  "Version : " + hexlify(self.version) + "\r\n"
+		buf = "Version : " + self.version.hex() + "\r\n"
 		index = 1
 		for trinput in self.inputs:
 			buf += "Input #" + str(index) + "\r\n"
@@ -159,7 +159,7 @@ class bitcoinTransaction:
 			buf += "Output #" + str(index) + "\r\n"
 			buf += str(troutput)
 			index+=1
-		buf += "Locktime : " + hexlify(self.lockTime) + "\r\n"
+		buf += "Locktime : " + self.lockTime.hex() + "\r\n"
 		if self.witness:
-			buf += "Witness script : " + hexlify(self.witnessScript) + "\r\n"
+			buf += "Witness script : " + self.witnessScript.hex() + "\r\n"
 		return buf
