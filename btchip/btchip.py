@@ -419,7 +419,7 @@ class btchip:
 		offset = 0
 		encryptedOutputData = b""
 		while (offset < len(message)):
-			params = [];
+			params = []
 			if offset == 0:
 				params.extend(donglePath)
 				params.append((len(message) >> 8) & 0xff)
