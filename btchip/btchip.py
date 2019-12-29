@@ -211,7 +211,7 @@ class btchip:
 			if segwit:
 				p2 = 0x03 if cashAddr else 0x02
 			else:
-				p2 = 0x00
+				p2 = 0x01 if version < 3 else 0x00
 		else:
 				p2 = 0x80
 		apdu = [ self.BTCHIP_CLA, self.BTCHIP_INS_HASH_INPUT_START, 0x00, p2 ]

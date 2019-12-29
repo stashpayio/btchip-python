@@ -91,13 +91,14 @@ class bitcoinTransaction:
 		self.lockTime = b""
 		self.witness = False
 		self.witnessScript = b""
+		self.extra_data = b"\x00"
 		if data is not None:
 			offset = 0
 			self.version = data[offset:offset + 4]
 			offset += 4
-			if (data[offset] == 0) and (data[offset + 1] != 0):
-				offset += 2
-				self.witness = True
+			#if (data[offset] == 0) and (data[offset + 1] != 0):
+			#	offset += 2
+			#	self.witness = True
 			inputSize = readVarint(data, offset)
 			offset += inputSize['size']
 			numInputs = inputSize['value']
@@ -117,7 +118,12 @@ class bitcoinTransaction:
 				self.lockTime = data[len(data) - 4:]
 			else:
 				self.lockTime = data[offset:offset + 4]
-
+				offset+=4
+			# Read any extra data
+			bytesRemaining = len(data) - offset
+			if bytesRemaining > 0:
+				self.extra_data = data[offset : offset + bytesRemaining]		
+			
 	def serialize(self, skipOutputLocktime=False, skipWitness=False):
 		if skipWitness or (not self.witness):
 			useWitness = False
@@ -138,6 +144,8 @@ class bitcoinTransaction:
 			if useWitness:
 				result.extend(self.witnessScript)
 			result.extend(self.lockTime)
+		if int.from_bytes(self.version, byteorder='little') < 3 and self.extra_data:
+			result.extend(self.extra_data)
 		return result
 
 	def serializeOutputs(self):
@@ -162,4 +170,6 @@ class bitcoinTransaction:
 		buf += "Locktime : " + self.lockTime.hex() + "\r\n"
 		if self.witness:
 			buf += "Witness script : " + self.witnessScript.hex() + "\r\n"
+		if self.extra_data:
+			buf += "Extra data :" + self.extra_data.hex() + "\r\n"
 		return buf
